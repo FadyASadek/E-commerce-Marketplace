@@ -1,0 +1,123 @@
+﻿@model OnlineStore.ViewModel.ProductViewModel.AddProductVM
+
+@{
+    SelectList categortes = new SelectList(ViewBag.Categories, "Id", "Name");
+    ViewData["Title"] = "Add Product";
+}
+
+
+<body class="uid-8">
+    <div class="c1 uid-9">
+        <h1 class="uid-10">Product Information</h1>
+
+        <form id="productForm" class="uid-11" asp-controller="product" asp-action="AddProduct" enctype="multipart/form-data">
+
+
+            <div class="c2 uid-12">
+                <label for="name" class="uid-13"><i class="fas fa-tag uid-14"></i> Product Name</label>
+                <input asp-for="name" type="text" placeholder="Enter product name" class="uid-15">
+                <span style="color:red;" asp-validation-for="name" class="text-danger"></span>
+            </div>
+
+            <div class="c3 uid-16">
+                <div class="c2 uid-17">
+                    <label for="quantity" class="uid-18"><i class="fas fa-cubes uid-19"></i> Quantity</label>
+                    <input asp-for="quantity" type="number" min="0" placeholder="0" class="uid-20">
+                    <span style="color:red;" asp-validation-for="quantity" class="text-danger"></span>
+                </div>
+
+                <div class="c2 uid-21">
+                    <label for="price" class="uid-22"><i class="fas fa-dollar-sign uid-23"></i> Price</label>
+                    <input asp-for="price" type="number" min="0" step="0.01" placeholder="0.00" class="uid-24">
+                    <span style="color:red;" asp-validation-for="price" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="c2 uid-25">
+                <label for="description" class="uid-26"><i class="fas fa-align-left uid-27"></i> Description</label>
+                <textarea asp-for="description" rows="4" placeholder="Enter product description" class="uid-28"></textarea>
+                <span style="color:red;" asp-validation-for="description" class="text-danger"></span>
+            </div>
+
+            <div class="c3 uid-29">
+                <div class="c2 uid-30">
+                    <label for="category" class="uid-31"><i class="fas fa-sitemap uid-32"></i> Category</label>
+                    <select id="category" name="category" class="uid-33" asp-items="categortes" onchange="GetSubCategory()" required>
+                        <option value="">Select a category</option>
+                    </select>
+                </div>
+
+                <div class="c2 uid-40">
+                    <label asp-for="Subcategory" class="uid-41"><i class="fas fa-project-diagram uid-42"></i> Sub-Category</label>
+                    <select id="Subcategory" asp-for="Subcategory" class="uid-43" required>
+                        <option value="">Select a sub-category</option>
+                    </select>
+                    <span style="color:red;" asp-validation-for="Subcategory" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="c2 uid-45">
+                <label asp-for="mainImage" class="uid-46"><i class="fas fa-image uid-47"></i> Main Image</label>
+                <input asp-for="mainImage" type="file" accept="image/*" class="uid-48" required>
+                <span style="color:red;" asp-validation-for="mainImage" class="text-danger"></span>
+                <div class="c4 uid-49" id="mainImagePreview">
+                    <p class="uid-50">No image selected</p>
+                </div>
+            </div>
+
+            <div class="c2 uid-51">
+                <label asp-for="additionalImages" class="uid-52"><i class="fas fa-images uid-53"></i> Sub Images (Select multiple)</label>
+                <input asp-for="additionalImages" type="file" accept="image/*" multiple class="uid-54">
+                <span style="color:red;" asp-validation-for="additionalImages" class="text-danger"></span>
+                <div class="c5 uid-55" id="subImagesPreview">
+                    <p class="uid-56">No images selected</p>
+                </div>
+            </div>
+            <div style="color:red;" asp-validation-summary="All" class="text-danger"></div>
+
+            <button type="submit" class="c6 uid-57"><i class="fas fa-save uid-58"></i> Save Product</button>
+        </form>
+    </div>
+</body>
+
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        function GetSubCategory() {
+            var categoryId = document.getElementById("category").value;
+            if (!categoryId) {
+                var subCategoryDropdown = document.getElementById("Subcategory");
+                subCategoryDropdown.innerHTML = '<option value="">Select a sub-category</option>';
+                return;
+            }
+
+            $.ajax({
+                type: "GET",
+                url: "/product/GetsubcategoryByCategoryId/" + categoryId,
+                success: function (data) {
+                    var subCategoryDropdown = document.getElementById("Subcategory");
+                    subCategoryDropdown.innerHTML = ""; 
+
+                    var defaultOption = document.createElement("option");
+                    defaultOption.text = "Select Sub Category";
+                    defaultOption.value = ""; 
+                    subCategoryDropdown.add(defaultOption);
+
+                    data.forEach(function(item) {
+                        var option = document.createElement("option");
+                        option.text = item.name;
+                        option.value = item.id;
+                        subCategoryDropdown.add(option);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.error("Failed to load sub-categories. Status: " + status + ", Error: " + error);
+                }
+            });
+        }
+    </script>
+}

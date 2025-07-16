@@ -1,0 +1,33 @@
+﻿    <div class="guest-profile-container">
+        <div class="profile-banner">
+            <div class="guest-profile-pic">
+                <i>👤</i>
+            </div>
+        </div>
+
+        <div class="profile-content">
+            <h1>Welcome, Guest</h1>
+            <p style="color: #666; margin-top: 10px;">Welcome to our website. Please sign in to access your profile.</p>
+
+            <div class="login-prompt">
+                <h2>Access Your Profile</h2>
+                <p>To view your profile, manage your products, and access additional features, please sign in or create a new account.</p>
+                <a  asp-action="login" asp-controller="account"  class="action-button">Login</a>
+            <a asp-action="register" asp-controller="account" class="action-button secondary">Create Account</a>
+            </div>
+
+            <div class="feature-section">
+                <div class="feature-box">
+                    <div class="feature-icon">🛒</div>
+                    <div class="feature-title">Product Management</div>
+                    <div class="feature-description">Add, edit, and archive your products easily through a user-friendly control panel.</div>
+                </div>
+
+                <div class="feature-box">
+                    <div class="feature-icon">📱</div>
+                    <div class="feature-title">Enhanced Access</div>
+                    <div class="feature-description">Enjoy a seamless experience across all devices with a responsive and carefully designed user interface.</div>
+                </div>
+            </div>
+        </div>
+    </div>

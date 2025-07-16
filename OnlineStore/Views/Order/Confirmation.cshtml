@@ -1,0 +1,188 @@
+﻿@model Order
+
+@{
+    ViewData["Title"] = "Order Confirmed";
+    Layout = "_Layout";
+}
+
+<div class="confirmation-page">
+    <div class="confirmation-card">
+        <div class="card-header">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2>Thank you for your order!</h2>
+            <p>Your order has been placed and is being processed.</p>
+        </div>
+
+        <div class="card-body">
+            <div class="order-summary">
+                <h4>Order Summary</h4>
+                <p>Order #@Model.Id placed on @Model.OrderDate.ToString("MMMM dd, yyyy")</p>
+
+                <ul class="list-group list-group-flush">
+                    @foreach (var detail in Model.OrderDetails)
+                    {
+                        <li class="list-group-item d-flex">
+                            <img src="@detail.Product.MainImage" class="summary-img me-3" />
+                            <div class="flex-grow-1">
+                                <strong>@detail.Product.Name</strong>
+                                <div class="text-muted">Qty: @detail.Quantity</div>
+                            </div>
+                            <span>$@((detail.Quantity * detail.Price).ToString("F2"))</span>
+                        </li>
+                    }
+                </ul>
+
+                <div class="summary-totals">
+                    <div class="d-flex justify-content-between">
+                        <span>Subtotal</span>
+                        <span>$@Model.OrderTotal.ToString("F2")</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span>Shipping</span>
+                        <span>FREE</span>
+                    </div>
+                    <div class="d-flex justify-content-between total-row">
+                        <strong>Total</strong>
+                        <strong>$@Model.OrderTotal.ToString("F2")</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div class="customer-info">
+                <div>
+                    <h5>Shipping to:</h5>
+                    <p>@Model.RecipientName</p>
+                    <p>@Model.ShippingAddress, @Model.City</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer">
+            <a asp-controller="Order" asp-action="MyOrders" class="btn btn-primary">View My Orders</a>
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">Continue Shopping</a>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .confirmation-page {
+            background-color: #f8f9fa;
+            padding: 4rem 1rem;
+        }
+
+        .confirmation-card {
+            max-width: 700px;
+            margin: auto;
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.07);
+            overflow: hidden;
+        }
+
+        a.btn.btn-primary {
+            background-color: #6914cd;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: white;
+        }
+
+        a.btn.btn-outline-secondary {
+            background-color: #2672fb;
+            text-decoration: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            color: white;
+        }
+        .card-header {
+            text-align: center;
+            padding: 2.5rem;
+            background-color: #f1fdf7;
+        }
+
+        .success-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #28a745;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .card-header h2 {
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .card-header p {
+            color: #6c757d;
+            margin-top: 0.5rem;
+            margin-bottom: 0;
+        }
+
+        .card-body {
+            padding: 2.5rem;
+        }
+
+        .order-summary h4 {
+            margin-bottom: 1rem;
+            font-weight: 600;
+        }
+
+        .summary-img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+
+        .list-group-item {
+            padding: 1rem 0;
+            border-bottom: 1px solid #eee;
+        }
+
+            .list-group-item:last-child {
+                border-bottom: none;
+            }
+
+        .summary-totals {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eee;
+        }
+
+        .total-row {
+            font-size: 1.2rem;
+            margin-top: 0.5rem;
+        }
+
+        .customer-info {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 2px solid #eee;
+        }
+
+            .customer-info h5 {
+                font-weight: 600;
+            }
+
+            .customer-info p {
+                margin-bottom: 0.25rem;
+            }
+
+        .card-footer {
+            padding: 1.5rem 2.5rem;
+            background-color: #f8f9fa;
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+        }
+    </style>
+}

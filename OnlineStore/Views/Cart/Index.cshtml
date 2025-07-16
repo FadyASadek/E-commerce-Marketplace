@@ -1,0 +1,90 @@
+﻿@model OnlineStore.ViewModels.CartViewModel
+
+@{
+    ViewData["Title"] = "Your Shopping Cart";
+}
+
+<div class="cart-container">
+    <div class="cart-header">
+        <h1>@ViewData["Title"]</h1>
+        <a asp-controller="Home" asp-action="Index" class="continue-shopping-link">Continue Shopping &rarr;</a>
+    </div>
+
+    @if (Model.CartItems.Any())
+    {
+        <div class="cart-body">
+            <div class="cart-items-list">
+                @foreach (var item in Model.CartItems)
+                {
+                    <div class="cart-item" data-item-id="@item.Id">
+                        <div class="item-image">
+                            <img src="@item.Product.MainImage" alt="@item.Product.Name" />
+                        </div>
+                        <div class="item-details">
+                            <h5 class="item-name">@item.Product.Name</h5>
+                            <p class="item-seller">Sold by: @item.Product.User.UserName</p>
+                            <p class="item-price" data-price="@item.Product.Price.ToString()">$@item.Product.Price.ToString("F2")</p>
+                        </div>
+
+                        <div class="item-quantity">
+                            <div class="quantity-controls">
+                                <button class="quantity-btn decrease-qty-btn" data-item-id="@item.Id"><i class="fas fa-minus"></i></button>
+                                <input type="text" class="quantity-input" value="@item.Quantity" readonly>
+                                <button class="quantity-btn increase-qty-btn" data-item-id="@item.Id"><i class="fas fa-plus"></i></button>
+                            </div>
+                            @if (Model.StockErrors.ContainsKey(item.Id))
+                            {
+                                <div class="stock-error text-danger">@Model.StockErrors[item.Id]</div>
+                            }
+                        </div>
+
+                        <div class="item-subtotal">
+                            <strong>$@((item.Quantity * (decimal)item.Product.Price).ToString("F2"))</strong>
+                        </div>
+                        <div class="item-remove">
+                            <button class="remove-btn" data-item-id="@item.Id" title="Remove item"><i class="fas fa-times"></i></button>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <div class="order-summary">
+                <h4>Order Summary</h4>
+                <div class="summary-item">
+                    <span>Subtotal</span>
+                    <span id="summary-subtotal">$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span id="summary-total">$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+
+                <a asp-controller="Order" asp-action="Checkout" class="btn-checkout @(Model.HasStockErrors ? "disabled" : "")">
+                    Proceed to Checkout
+                </a>
+                <div id="checkout-error" class="text-danger d-block text-center mt-2" style="display: none;"></div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="cart-empty">
+            <h2>Your cart is empty.</h2>
+            <a asp-controller="Home" asp-action="Index" class="btn-continue-shopping">Start Shopping</a>
+        </div>
+    }
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/cart.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="~/js/cart.js" asp-append-version="true"></script>
+}

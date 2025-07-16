@@ -1,0 +1,82 @@
+﻿@model IEnumerable<Product>
+
+@{
+    ViewData["Title"] = "Manage Products";
+}
+
+<div class="products-actions" style="margin-top:30px" >
+    <a asp-action="AddProduct" style="text-decoration:none; asp-controller="Product" class="add-product-btn">
+        Add New Product
+    </a>
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Category</th>
+                <th>Seller</th> 
+                <th>Date Added</th>   
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var i in Model)
+            {
+                <tr>
+                    <td>
+                        <img src="@i.MainImage" alt="@i.Name" style="width:60px; height:60px; object-fit: cover; border-radius: 5px;">
+                    </td>
+                    <td>@i.Name</td>
+                    <td>$@i.Price.ToString("F2")</td>
+                    <td>@i.Quantity</td>
+                    <td>
+                        @i.subCategory.category.Name &rarr; @i.subCategory.Name
+                    </td>
+                    <td>
+                        @i.User.UserName
+                    </td>
+                    <td>
+                        @i.CreateAt.ToString("yyyy-MM-dd")
+                    </td>
+                    <td>
+                        <a asp-action="EditProduct" asp-controller="Product" asp-route-id="@i.Id"><button class="edit-btn">Edit</button></a>
+
+                        <form asp-action="Delete" asp-controller="Product" asp-route-id="@i.Id" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            <button type="button" class="delete-btn delete-product-btn">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function () {
+            $('.delete-product-btn').on('click', function (e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: "Are you sure?",
+                    text: "This product will be hidden from the store!",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonColor: "#d33",
+                    confirmButtonText: "Yes, delete it!"
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

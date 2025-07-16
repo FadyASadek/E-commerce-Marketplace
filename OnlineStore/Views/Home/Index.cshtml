@@ -1,0 +1,190 @@
+﻿@model HomeCategoryAndProductVM
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="category-carousel">
+    <button class="carousel-arrow prev">❮</button>
+    <div class="category-container">
+        <div class="category-items">
+            <a asp-action="GetALLCategory" asp-controller="home" class="product-card-link">
+                <div class="category-item active" data-category="all">
+                    <img src="https://cdn-icons-png.flaticon.com/512/3405/3405802.png" alt="All Categories">
+                    <span>All</span>
+                </div>
+            </a>
+            @foreach (var i in Model.mainCategories)
+            {
+                <a asp-action="GetSubCategoryByCategoryId" asp-controller="home" asp-route-id="@i.Id" class="product-card-link">
+                    <div class="category-item active" data-category="all">
+                        <img src="@i.Image" alt="All Categories">
+                        <span>@i.Name</span>
+                    </div>
+                </a>
+            }
+
+        </div>
+    </div>
+    <button class="carousel-arrow next">❯</button>
+</div>
+
+
+<div class="products-container">
+    @foreach (var pvm in Model.Products)
+    {
+        var product = pvm.Product;
+        <a asp-action="Details" asp-controller="Product" asp-route-id="@product.Id" class="product-card-link">
+            <div class="product-card">
+                <div class="product-image-main">
+                    <img src="@product.MainImage" class="main-image-nid1" alt="@product.Name">
+                </div>
+                <div class="product-details">
+                    <span class="product-category">@product.subCategory.category.Name</span>
+                    <h3 class="product-name">@product.Name</h3>
+                    <div class="product-price">
+                        <span class="current-price">$@product.Price.ToString("F2")</span>
+                    </div>
+                    <div class="product-rating">
+                        <span class="stars">
+                            @{
+                                var fullStars = (int)pvm.AverageRating;
+                                var halfStar = (pvm.AverageRating - fullStars) >= 0.5;
+                                var emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
+                            }
+                            @for (int i = 0; i < fullStars; i++)
+                            {
+                                <i class="fas fa-star"></i>
+                            }
+                            @if (halfStar)
+                            {
+                                <i class="fas fa-star-half-alt"></i>
+                            }
+                            @for (int i = 0; i < emptyStars; i++)
+                            {
+                                <i class="far fa-star"></i>
+                            }
+                        </span>
+                        <span class="reviews">(@pvm.RatingCount)</span>
+                    </div>
+                    <button class="add-to-cart">
+                        <i class="fas fa-shopping-cart"></i> Add to Cart
+                    </button>
+                </div>
+            </div>
+        </a>
+    }
+</div>
+
+@{
+    int currentPage = ViewBag.CurrentPage ?? 1;
+    int totalPages = ViewBag.TotalPages ?? 1;
+    int pagesToShow = 5; 
+    int startPage = Math.Max(1, currentPage - (pagesToShow / 2));
+    int endPage = Math.Min(totalPages, startPage + pagesToShow - 1);
+
+    if (endPage - startPage + 1 < pagesToShow && totalPages >= pagesToShow)
+    {
+        startPage = endPage - pagesToShow + 1;
+    }
+}
+
+@if (totalPages > 1)
+{
+    <nav class="pagination-container">
+        <ul class="pagination-list">
+            <li class="page-item @(currentPage == 1 ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage - 1)">&laquo;</a>
+            </li>
+            @if (startPage > 1)
+            {
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-page="1">1</a></li>
+                @if (startPage > 2)
+                {
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                }
+            }
+            @for (int i = startPage; i <= endPage; i++)
+            {
+                <li class="page-item @(i == currentPage ? "active" : "")">
+                    <a class="page-link" asp-action="Index" asp-route-page="@i">@i</a>
+                </li>
+            }
+            @if (endPage < totalPages)
+            {
+                @if (endPage < totalPages - 1)
+                {
+                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                }
+                <li class="page-item"><a class="page-link" asp-action="Index" asp-route-page="@totalPages">@totalPages</a></li>
+            }
+            <li class="page-item @(currentPage == totalPages ? "disabled" : "")">
+                <a class="page-link" asp-action="Index" asp-route-page="@(currentPage + 1)">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+}
+@section Styles {
+    <style>
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 2.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .pagination-list {
+            display: flex;
+            padding-left: 0;
+            list-style: none;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+        }
+
+        .page-item .page-link {
+            position: relative;
+            display: block;
+            color: #0d6efd;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #dee2e6;
+            padding: 0.6rem 1.1rem;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .page-item:not(:first-child) .page-link {
+            margin-left: -1px;
+        }
+
+        .page-item:first-child .page-link {
+            border-top-left-radius: 0.5rem;
+            border-bottom-left-radius: 0.5rem;
+        }
+
+        .page-item:last-child .page-link {
+            border-top-right-radius: 0.5rem;
+            border-bottom-right-radius: 0.5rem;
+        }
+
+        .page-item .page-link:hover {
+            z-index: 2;
+            color: #0a58ca;
+            background-color: #e9ecef;
+        }
+
+        .page-item.active .page-link {
+            z-index: 3;
+            color: #fff;
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+
+        .page-item.disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            background-color: #fff;
+            border-color: #dee2e6;
+        }
+    </style>
+}

@@ -1,0 +1,106 @@
+﻿@model IEnumerable<OrderDetail>
+
+@{
+    ViewData["Title"] = "My Sales";
+}
+
+<div class="products-actions">
+    <h2 style="margin:0;">@ViewData["Title"]</h2>
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Order Date</th>
+                <th>Customer</th>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@item.Order.OrderNumber">
+                                <strong>@item.Order.OrderNumber</strong>
+                            </a>
+                        </td>
+                        <td>@item.Order.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>@item.Order.Customer.UserName</td>
+                        <td>@item.Product.Name</td>
+                        <td>@item.Quantity</td>
+                        <td>
+                            @{
+                                var statusClass = item.Order.OrderStatus?.ToLower() ?? "";
+                            }
+                            <span class="status-badge @statusClass">@item.Order.OrderStatus</span>
+                        </td>
+                        <td>
+                            @if (item.Order.OrderStatus == "Pending")
+                            {
+                                <form asp-action="ProcessOrder" asp-controller="SellerDashboard" asp-route-orderDetailId="@item.Id" method="post">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="edit-btn">Start Processing</button>
+                                </form>
+                            }
+                            @if (item.Order.OrderStatus == "Processing")
+                            {
+                                <form asp-action="ShipOrder" asp-controller="SellerDashboard" asp-route-orderDetailId="@item.Id" method="post">
+                                    <button type="submit" class="edit-btn" style="background-color: #198754;">Mark as Shipped</button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="7" style="text-align:center; padding: 20px;">You have no sales yet.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Styles {
+    <style>
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            color: #fff;
+        }
+
+            .status-badge.pending {
+                background-color: #ffc107;
+                color: #333;
+            }
+
+            .status-badge.processing {
+                background-color: #6c757d;
+            }
+
+            .status-badge.shipped {
+                background-color: #0d6efd;
+            }
+
+            .status-badge.delivered {
+                background-color: #198754;
+            }
+
+            .status-badge.cancelled {
+                background-color: #dc3545;
+                text-decoration: line-through;
+            }
+    </style>
+}

@@ -1,0 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --primary-color: #7209b7;
+    --primary-light: #b5179e;
+    --primary-dark: #560bad;
+    --secondary-color: #4cc9f0;
+    --text-color: #2b2d42;
+    --text-light: #8d99ae;
+    --bg-color: #f8f9fa;
+    --bg-card: #ffffff;
+    --border-radius: 12px;
+    --shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    --transition: all 0.3s ease;
+}
+
+
+
+
+
+.form-container {
+    background-color: var(--bg-card);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow);
+    padding: 40px;
+    overflow: hidden;
+    position: relative;
+    width: 500px;
+    margin: auto;
+    margin-top: 30px;
+}
+
+
+.header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.header h1 {
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: var(--text-light);
+    font-size: 0.95rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.form-row .form-group {
+    flex: 1;
+    margin-bottom: 0;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    position: relative;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: var(--text-color);
+    font-size: 0.95rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: var(--text-color);
+    background-color: #fff;
+    transition: var(--transition);
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    transition: var(--transition);
+    z-index: 5;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+.toggle-password:active,
+.toggle-password:focus {
+    outline: none;
+    box-shadow: none;
+    background: transparent;
+}
+
+input:focus {
+    border-color: var(--primary-light);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(114, 9, 183, 0.15);
+}
+
+.password-strength {
+    margin-top: 10px;
+}
+
+.strength-meter {
+    height: 5px;
+    background-color: #e9ecef;
+    border-radius: 3px;
+    margin-bottom: 5px;
+    overflow: hidden;
+}
+
+.strength-bar {
+    height: 100%;
+    width: 0;
+    border-radius: 3px;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+    font-size: 0.8rem;
+    color: var(--text-light);
+}
+
+/* Terms checkbox */
+.terms-container {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 20px;
+    font-size: 0.9rem;
+}
+
+.terms-container input[type="checkbox"] {
+    margin-right: 10px;
+    margin-top: 5px;
+    accent-color: var(--primary-color);
+}
+
+.terms-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.terms-link:hover {
+    text-decoration: underline;
+}
+
+/* Submit button */
+.submit-btn {
+    background: linear-gradient(to right, var(--primary-color), var(--primary-light));
+    color: white;
+    border: none;
+    padding: 14px 24px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 8px;
+    width: 100%;
+    transition: var(--transition);
+    margin-top: 10px;
+    box-shadow: 0 4px 6px rgba(114, 9, 183, 0.25);
+}
+
+.submit-btn:hover {
+    background: linear-gradient(to right, var(--primary-dark), var(--primary-color));
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(114, 9, 183, 0.3);
+}
+
+.submit-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 4px rgba(114, 9, 183, 0.2);
+}
+
+/* Social signup */
+.social-signup {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.social-signup p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+    position: relative;
+}
+
+.social-signup p::before,
+.social-signup p::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    width: 30%;
+    height: 1px;
+    background-color: #e9ecef;
+}
+
+.social-signup p::before {
+    left: 0;
+}
+
+.social-signup p::after {
+    right: 0;
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.social-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: var(--transition);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+    border: 1px solid #e9ecef;
+}
+
+.social-btn.google {
+    color: #DB4437;
+}
+
+.social-btn.facebook {
+    color: #4267B2;
+}
+
+.social-btn.twitter {
+    color: #1DA1F2;
+}
+
+.social-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Form footer */
+.form-footer {
+    margin-top: 30px;
+    text-align: center;
+    font-size: 0.95rem;
+}
+
+.form-footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.form-footer a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+/* Error message styling */
+.error-message {
+    color: #e63946;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+input.error {
+    border-color: #e63946;
+}
+
+@media (max-width: 580px) {
+    .form-container {
+        padding: 30px 20px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .form-row .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .social-signup p::before,
+    .social-signup p::after {
+        width: 25%;
+    }
+}

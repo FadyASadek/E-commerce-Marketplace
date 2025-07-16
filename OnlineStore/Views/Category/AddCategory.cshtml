@@ -1,0 +1,92 @@
+﻿@model OnlineStore.ViewModel.Category.CategoryVM
+
+@{
+    ViewData["Title"] = "Create New Category";
+}
+
+<div class="c1">
+    <h1 class="uid-10">@ViewData["Title"]</h1>
+
+    <form asp-action="addcategory" asp-controller="Category" enctype="multipart/form-data" method="post">
+        @Html.AntiForgeryToken()
+
+        <div class="c2">
+            <label asp-for="name" class="uid-13"><i class="fas fa-tag"></i> Category Name</label>
+            <input asp-for="name" type="text" placeholder="Enter category name" class="uid-15">
+            <span style="color:red !important;" asp-validation-for="name" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="description" class="uid-26"><i class="fas fa-align-left"></i> Description</label>
+            <textarea asp-for="description" rows="4" placeholder="Enter category description" class="uid-28"></textarea>
+            <span style="color:red !important;" asp-validation-for="description" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="primaryImage" class="uid-46"><i class="fas fa-image"></i> Category Image</label>
+            <input asp-for="primaryImage" type="file" accept="image/*" class="uid-48">
+            <span style="color:red !important;" asp-validation-for="primaryImage" class="text-danger"></span>
+
+            <div class="c4 uid-49" id="imagePreviewContainer">
+                <p class="uid-50">No image selected</p>
+            </div>
+        </div>
+        <div style="color:red !important;" asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6 uid-57"><i class="fas fa-save"></i> Save Category</button>
+        </div>
+    </form>
+</div>
+
+@section Styles {
+    <style>
+      
+        .uid-15, .uid-28 {
+            width: 100%;
+            padding: 10px;
+        }
+
+        .c4 {
+            margin-top: 15px;
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            color: #888;
+        }
+
+        #imagePreviewContainer img {
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 5px;
+        }
+    </style>
+}
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            $('#primaryImage').on('change', function(event) {
+                var previewContainer = $('#imagePreviewContainer');
+                previewContainer.empty(); 
+
+                var file = event.target.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var img = $('<img>').attr('src', e.target.result);
+                        previewContainer.append(img);
+                    }
+                    reader.readAsDataURL(file);
+                } else {
+                    previewContainer.append('<p class="uid-50">No image selected</p>');
+                }
+            });
+        });
+    </script>
+}

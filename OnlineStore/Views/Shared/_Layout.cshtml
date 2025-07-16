@@ -1,0 +1,184 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using OnlineStore.Repository
+@inject IShoppingCartRepository _cartRepo
+@inject UserManager<ApplicationUser> _userManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - OnlineStore</title>
+    <link href="~/css/Lodding.css" rel="stylesheet" />
+    <link href="~/css/dashboard.css" rel="stylesheet" />
+    <link href="~/css/product.css" rel="stylesheet" />
+    <link href="~/css/product-details.css" rel="stylesheet" />
+    <link href="~/css/category-style.css" rel="stylesheet" />
+    <link href="~/css/guest_profile.css" rel="stylesheet" />
+    <link href="~/css/profile_styles.css" rel="stylesheet" />
+    <link href="~/css/categories_styles.css" rel="stylesheet" />
+    <link href="~/css/login.css" rel="stylesheet" />
+    <link href="~/css/register.css" rel="stylesheet" />
+    <link href="~/css/styles.css" rel="stylesheet" />
+    <link href="~/css/stylesFormProduct.css" rel="stylesheet" />
+    @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+</head>
+<body>
+    <div class="container">
+        <nav class="sidebar hidden" style="    background: linear-gradient(to bottom, #6a11cb, #2575fc) !important ; ">
+            <ul>
+                @if (User.IsInRole("Seller"))
+                {
+                    <li><a asp-action="Index" asp-controller="SellerDashboard">Dashboard</a></li>
+                    <li><a asp-action="MySales" asp-controller="SellerDashboard"> My Sales</a></li>
+                    <li><a asp-action="addproduct" asp-controller="product"> Add Product</a></li>
+                }
+                @if (User.IsInRole("Admin"))
+                {
+                    <li><a asp-action="Index" asp-controller="Dashboard"> Dashboard</a></li>
+                    <li><a asp-action="Index" asp-controller="category"> Category</a></li>
+                    <li><a asp-action="Index" asp-controller="subcategory"> Sub Category</a></li>
+                    <li><a asp-action="Index" asp-controller="product"> Product</a></li>
+                    <li><a asp-action="ManageComments" asp-controller="Comment"> Comment</a></li>
+                    <li><a asp-action="ManageRatings" asp-controller="RateProduct"> Ratings</a></li>
+                    <li><a asp-action="index" asp-controller="role"> Roles</a></li>
+                    <li><a asp-action="index" asp-controller="publicinfo"> Public Info</a></li>
+                }                
+                <li><a asp-action="index" asp-controller="profile" >Profile</a></li>
+            </ul>
+        </nav>
+        
+
+        <!-- Main Content -->
+        <div class="main-content">      
+            <!-- Header -->
+                <header>
+                    <div class="header-left">
+            
+                        <button class="toggle-sidebar">☰</button>
+            
+                        <h1>Store</h1>
+                    </div>
+                    <div class="header-right">
+                    @if(User.IsInRole("Admin") || User.IsInRole("Seller"))
+                    {                       
+                    <a asp-controller="product" asp-action="addproduct" class="header-link"><i class="fas fa-plus-circle"></i> Add Product</a>
+                    }
+                    @if (User.IsInRole("Seller"))
+                    {     
+                        <a asp-controller="SellerDashboard" asp-action="index" class="header-link">Dashboard</a>
+                    }
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <a asp-controller="Dashboard" asp-action="index" class="header-link">Dashboard</a>
+
+                    }
+                    <a asp-controller="home" asp-action="index" class="header-link">Products</a>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        
+                    <a asp-action="MyOrders" asp-controller="order" class="header-link">Orders</a>
+                    }
+                    <a class="header-link" asp-action="index" asp-controller="profile">Profile</a>
+                    @{
+                        var cartCount = 0;
+                        if (User.Identity.IsAuthenticated)
+                        {
+                            var userId = _userManager.GetUserId(User);
+                            cartCount = await _cartRepo.GetCartCountAsync(userId);
+                        }
+                    }
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        
+                    <a asp-controller="Cart" asp-action="Index" class="nav-link text-dark position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span id="cart-item-count" class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">
+                            @cartCount
+                        </span>
+                    </a>
+                    }
+                </div>
+                </header>
+
+            
+            <main>
+                @RenderBody()
+            </main>
+        </div>
+
+</body>
+
+    
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        <script src="/js/dashboard.js"></script>
+        <script src="/js/category-carousel.js"></script>
+        <script src="/js/login.js"></script>
+        <script src="/js/register.js"></script>
+        <script src="/js/script.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+    <div id="loading-spinner" style="display: none;">
+        <div class="dot-spinner">
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+            <div class="dot-spinner__dot"></div>
+        </div>
+    </div>
+
+</html>
+<script>
+    $(document).ready(function () {
+        $(document).ajaxStart(function () {
+            $('#loading-spinner').fadeIn(200);
+        });
+
+        $(document).ajaxStop(function () {
+            $('#loading-spinner').fadeOut(200);
+        });
+
+        $(window).on('beforeunload', function () {
+            $('#loading-spinner').fadeIn(200);
+        });
+
+        $(window).on('load', function () {
+            $('#loading-spinner').fadeOut(200);
+        });
+
+        $(document).on('click', 'a.ajax-link, button.ajax-button', function (e) {
+            e.preventDefault(); 
+
+            $('#loading-spinner').fadeIn(200);
+
+            $.get($(this).attr('href'), function (data) {
+                $('#target-container').html(data);
+                $('#loading-spinner').fadeOut(200);
+            });
+        });
+    });
+       
+
+
+
+</script>
+<style>
+    a.nav-link.text-dark {
+        color: wheat;
+        text-decoration : none;
+        margin: auto;
+    }
+</style>

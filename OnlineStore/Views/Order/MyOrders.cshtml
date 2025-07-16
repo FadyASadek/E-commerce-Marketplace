@@ -1,0 +1,132 @@
+﻿@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "My Orders";
+    Layout = "_Layout";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="products-actions">
+    <h2 style="margin-top: 10px;">@ViewData["Title"]
+    </h2>
+  
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td><a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@order.OrderNumber"><strong>@order.OrderNumber</strong></a></td>
+                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>$@order.OrderTotal.ToString("F2")</td>
+                        <td>
+                            @{
+                                var statusClass = order.OrderStatus?.ToLower() ?? "";
+                            }
+                            <span class="status-badge @statusClass">@order.OrderStatus</span>
+                        </td>
+                        <td>
+                            <a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@order.OrderNumber">
+                                <button type="button" class="edit-btn">View Details</button>
+                            </a>
+
+                            @if (order.OrderStatus == "Pending" || order.OrderStatus == "Processing")
+                            {
+                                <form asp-action="CancelOrder" asp-controller="Order" asp-route-id="@order.Id" method="post" style="display:inline;">
+                                    @Html.AntiForgeryToken()
+                                    <button type="button" class="delete-btn cancel-order-btn">
+                                        Cancel
+                                    </button>
+                                </form>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center; padding: 20px;">You have no orders yet.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Styles {
+    <style>
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+        }
+
+            .status-badge.pending {
+                background-color: #ffc107;
+                color: #333;
+            }
+
+            .status-badge.processing {
+                background-color: #6c757d;
+                color: #fff;
+            }
+
+            .status-badge.shipped {
+                background-color: #0d6efd;
+                color: #fff;
+            }
+
+            .status-badge.delivered {
+                background-color: #198754;
+                color: #fff;
+            }
+
+            .status-badge.cancelled {
+                background-color: #f8d7da;
+                color: #721c24;
+                text-decoration: line-through;
+            }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.cancel-order-btn').on('click', function (e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Do you want to cancel this order?",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, cancel it!',
+                    cancelButtonText: 'No, keep it'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+        });
+    </script>
+}

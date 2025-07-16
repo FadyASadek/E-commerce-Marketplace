@@ -1,0 +1,61 @@
+﻿@model OnlineStore.ViewModel.SubCategory.AddSubCategoryVM
+
+@{
+    ViewData["Title"] = "Add New Sub-Category";
+    SelectList categortes = new SelectList(ViewBag.category, "Id", "Name");
+}
+
+<div class="c1">
+    <h1 class="uid-10">@ViewData["Title"]</h1>
+
+    <form asp-action="AddSubCategory" asp-controller="SubCategory" enctype="multipart/form-data" method="post" class="uid-11">
+
+        @Html.AntiForgeryToken()
+
+        <div class="c2">
+            <label asp-for="Name" class="uid-13"><i class="fas fa-tag"></i> Sub-Category Name</label>
+            <input asp-for="Name" type="text" placeholder="Enter sub-category name" class="uid-15" />
+            <span style="color:red" asp-validation-for="Name" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="Description" class="uid-26"><i class="fas fa-align-left"></i> Description</label>
+            <textarea asp-for="Description" rows="4" placeholder="Enter a brief description" class="uid-28"></textarea>
+            <span style="color:red" asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="CategoryId" class="uid-31"><i class="fas fa-sitemap"></i> Main Category</label>
+            <select asp-for="CategoryId" class="uid-33 form-control" asp-items="categortes">
+                <option value="">-- Select Main Category --</option>
+            </select>
+            <span style="color:red" asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="Image" class="uid-46"><i class="fas fa-image"></i> Image</label>
+            <input asp-for="Image" type="file" accept="image/*" class="uid-48" id="mainImage">
+            <span style="color:red" asp-validation-for="Image" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label>Image Preview</label>
+            <div class="c4 uid-49" id="mainImagePreview">
+                <p class="uid-50">No image selected</p>
+            </div>
+        </div>
+        <div style="color:red" asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6 uid-57"><i class="fas fa-plus-circle"></i> Create Sub-Category</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+ 
+}

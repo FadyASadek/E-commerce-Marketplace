@@ -1,0 +1,81 @@
+﻿@model IEnumerable<MainCategory>
+
+@{
+    ViewData["Title"] = "Manage Categories";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="products-actions" style="margin-top:30px">
+    <h2 style="margin:0;">@ViewData["Title"]</h2>
+    <a asp-action="Addcategory" style="text-decoration:none;" asp-controller="Category" class="add-product-btn">
+        Add New Category
+    </a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success mt-3">@TempData["SuccessMessage"]</div>
+}
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><img src="@item.Image" style="width:60px; height:60px; object-fit: cover; border-radius: 5px;" alt="@item.Name" /></td>
+                        <td>@item.Name</td>
+                        <td>@item.Description</td>
+                        <td>
+                            <a asp-action="EditCategory" asp-controller="Category" asp-route-id="@item.Id"><button class="edit-btn">Edit</button></a>
+
+                            <form asp-action="Delete" asp-controller="Category" asp-route-id="@item.Id" method="post" style="display:inline;">
+                                <button type="button" class="delete-btn delete-category-btn">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="4" class="text-center p-4">No categories found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.delete-category-btn').on('click', function (e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "Deleting a category will also delete its subcategories. This action cannot be undone!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

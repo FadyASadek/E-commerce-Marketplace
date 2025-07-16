@@ -1,0 +1,120 @@
+﻿@model ProfileVM
+
+@{
+    ViewData["Title"] = "Profile";
+}
+    <div class="enhanced-profile-container">
+        <div class="profile-banner">
+            <div class="profile-pic-enhanced">
+            @if (!string.IsNullOrEmpty(Model.image))
+            {
+                
+                <img src="@Model.image" alt="Profile Picture">
+            }else{
+                <img src="~/images/blank-profile-picture-973460_960_720.webp" alt="Profile Picture">
+            }
+            </div>
+        </div>
+
+        <div class="profile-content-wrapper">
+            <div class="profile-identity-section">
+                <h1>@Model.username</h1>
+                <p class="membership-longevity-indicator">Prestigious Member since May 2023</p>
+                <div class="profile-interactive-buttons">
+                    <a asp-action="editprofile" asp-controller="profile" ><button class="profile-action-btn">Edit Profile Details</button></a>
+            </div>
+                <form asp-action="SignOut" asp-controller="Account" method="post">
+
+                <button type="submit" style="display: block !important;
+                   margin: auto !important;
+                   margin-top: 7px !important;
+                   padding: 10px 30px !important;
+                   background-color: red !important;
+                   color: white !important;
+                   outline: none !important;
+                   border: 2px solid !important;
+                   border-radius: 6px !important;" class="nav-link btn btn-link text-dark">
+                   Sign Out
+                </button>
+                </form>
+            </div>
+
+          
+
+            <div class="biographical-exposition-container">
+                <h2 class="section-designation">Description</h2>
+                <div class="content-display-panel">
+                    <p>@Model.Discripation</p>
+                </div>
+            </div>
+
+            <div class="communication-coordinates-repository">
+                <h2 class="section-designation">Personal information</h2>
+                <div class="content-display-panel">
+                    <div class="contact-information-entry">
+                        <span class="contact-category-identifier">Email Address:</span>
+                        <span class="contact-specific-detail">@Model.email</span>
+                    </div>
+                    <div class="contact-information-entry">
+                        <span class="contact-category-identifier">Phone Number:</span>
+                        <span class="contact-specific-detail">@Model.phone</span>
+                    </div>
+                </div>
+            </div>
+        @if (User.IsInRole("Seller"))
+        {
+            <div class="creative-output-showcase">
+                <h2 class="section-designation">Your Product</h2>
+                <div class="artistic-creation-gallery">
+                    @foreach (var i in Model.products)
+                    {
+                        <div class="individual-creation-representation">
+                            <a asp-action="Details" asp-controller="product" asp-route-id="@i.Id" class="product-card-link">
+                                <div class="creation-visual-representation">
+                                    <img src="@i.MainImage" alt="Alternate Text" />
+                                </div>
+                                <div class="creation-descriptive-metadata">
+                                    <div class="creation-nomenclature">@i.Name</div>
+                                    <div class="creation-monetary-valuation">$@i.Price</div>
+                                </div>
+                                <div class="product-actions">
+                                    <a asp-action="editproduct" asp-controller="product" asp-route-id="@i.Id"><button class="product-action-btn edit">Edit</button></a>
+                                    <a onclick="confirmDelete(@i.Id)"><button class="product-action-btn delete">Delete</button></a>
+                                </div>
+                            </a>
+                        </div>
+                    }
+                </div>
+            </div>
+        }
+           
+        </div>
+    </div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        function confirmDelete(productId) {
+            Swal.fire({
+                title: "Are you sure?",
+                text: "You won't be able to undo this!",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonColor: "#d33",
+                cancelButtonColor: "#3085d6",
+                confirmButtonText: "Yes, delete it!",
+                cancelButtonText: "Cancel"
+            }).then((result) => {
+                if (result.isConfirmed) {
+            const returnUrl = encodeURIComponent(window.location.pathname + window.location.search);
+            window.location.href = "/Product/Delete/" + productId + "?returnUrl=" + returnUrl;
+        }
+            });
+        }
+    </script>
+
+
+}

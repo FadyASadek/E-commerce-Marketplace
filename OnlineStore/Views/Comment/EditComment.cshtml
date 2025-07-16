@@ -1,0 +1,32 @@
+﻿@model OnlineStore.Models.Commment
+
+@{
+    ViewData["Title"] = "Edit Comment";
+}
+
+
+<div class="c1">
+    <h1 class="uid-10">Edit Comment</h1>
+
+    <form asp-action="EditComment"  class="uid-11">
+
+        
+        <input type="hidden" asp-for="Id" />
+        <input type="hidden" asp-for="productId" />
+        <input type="hidden" asp-for="UserId" />
+        <input type="hidden" asp-for="CreateAt" />
+
+
+        <div class="c2">
+            <label asp-for="Comments" class="uid-13"><i class="fas fa-comment-alt"></i> Comment Text</label>
+            <textarea asp-for="Comments" rows="6" class="uid-28"></textarea>
+            <span style="color:red !important;" asp-validation-for="Comments" class="text-danger"></span>
+        </div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6"><i class="fas fa-save"></i> Save Changes</button>
+
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,39 @@
+﻿@model IEnumerable<PublicInfo>
+
+@{
+    ViewData["Title"] = "Public Info Management";
+}
+
+<div class="products-actions">
+    <h2 style="margin:0;">@ViewData["Title"]</h2>
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Title</th>     
+                <th>Description</th>  
+                <th>Logo</th>
+                <th>Email</th>
+                <th>Actions</th>      
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Title</td>
+                    <td>@item.Description</td>
+                    <td><img src="@item.Logo" style="width:60px" alt="Logo" /></td>
+                    <td>@item.Email</td>
+                    <td>
+                        <a asp-action="EditPublicInfo" style="text-decoration:none;" asp-route-id="@item.Id" asp-controller="publicinfo" class="edit-btn">
+                            Edit
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,234 @@
+﻿@model IEnumerable<Order>
+
+@{
+    ViewData["Title"] = "All System Orders";
+    var currentStatusFilter = ViewData["CurrentStatusFilter"] as string;
+    var currentSearch = ViewData["CurrentSearch"] as string;
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+
+<form asp-action="AllOrders" asp-controller="Order" method="get">
+    <div class="products-actions">
+        <h2 style="margin:0;">@ViewData["Title"]</h2>
+        <div class="d-flex align-items-center gap-3">
+            <div class="filter-dropdown">
+                <i class="fas fa-filter filter-icon"></i>
+                <select name="statusFilter" class="custom-select" onchange="this.form.submit()">
+                    <option value="">All Statuses</option>
+                    <option value="Pending" selected="@("Pending".Equals(currentStatusFilter))">Pending</option>
+                    <option value="Processing" selected="@("Processing".Equals(currentStatusFilter))">Processing</option>
+                    <option value="Shipped" selected="@("Shipped".Equals(currentStatusFilter))">Shipped</option>
+                    <option value="Delivered" selected="@("Delivered".Equals(currentStatusFilter))">Delivered</option>
+                    <option value="Cancelled" selected="@("Cancelled".Equals(currentStatusFilter))">Cancelled</option>
+                </select>
+            </div>
+            <div class="search-box">
+                <input type="text" name="searchQuery" value="@currentSearch" placeholder="Search by Order # or Customer...">
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+        </div>
+    </div>
+</form>
+
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>Order #</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>
+                            <a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@order.OrderNumber">
+                                <strong>@order.OrderNumber</strong>
+                            </a>
+                        </td>
+                        <td>@order.Customer.UserName</td>
+                        <td>@order.OrderDate.ToString("yyyy-MM-dd")</td>
+                        <td>$@order.OrderTotal.ToString("F2")</td>
+                        <td>
+                            @{
+                                var statusClass = order.OrderStatus?.ToLower() ?? "";
+                            }
+                            <span class="status-badge @statusClass">@order.OrderStatus</span>
+                        </td>
+                        <td>
+                            <a asp-action="OrderDetails" asp-controller="Order" asp-route-id="@order.OrderNumber">
+                                <button type="button" class="edit-btn">Details</button>
+                            </a>
+
+                            <button type="button" class="delete-btn update-status-btn"
+                                    data-order-id="@order.Id"
+                                    data-current-status="@order.OrderStatus">
+                                Change Status
+                            </button>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="6" class="text-center p-4">No orders match your criteria.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<form id="updateStatusForm" asp-action="UpdateOrderStatus" asp-controller="Order" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" id="orderIdInput" name="orderId" />
+    <input type="hidden" id="newStatusInput" name="newStatus" />
+</form>
+
+@section Styles {
+    <style>
+        .products-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+            .products-actions h2 {
+                margin: 0;
+                font-size: 1.75rem; 
+            }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            color: #fff;
+        }
+
+            .status-badge.pending {
+                background-color: #ffc107;
+                color: #333;
+            }
+
+            .status-badge.processing {
+                background-color: #6c757d;
+            }
+
+            .status-badge.shipped {
+                background-color: #0d6efd;
+            }
+
+            .status-badge.delivered {
+                background-color: #198754;
+            }
+
+            .status-badge.cancelled {
+                background-color: #dc3545;
+            }
+
+        .filter-dropdown {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 0 10px;
+        }
+
+        .filter-icon {
+            color: #888;
+        }
+
+        .custom-select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-color: transparent;
+            border: none;
+            padding: 10px 15px 10px 5px;
+            font-size: 1rem;
+            color: #333;
+            cursor: pointer;
+            width: 180px;
+        }
+
+            .custom-select:focus {
+                outline: none;
+            }
+
+        .filter-dropdown::after {
+            content: '\f078'; 
+            font-family: 'Font Awesome 6 Free';
+            font-weight: 900;
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #888;
+        }
+
+        .d-flex.align-items-center.gap-3 {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.update-status-btn').on('click', function () {
+                var orderId = $(this).data('order-id');
+                var currentStatus = $(this).data('current-status');
+
+                Swal.fire({
+                    title: 'Update Order Status',
+                    text: `Current status: ${currentStatus}`,
+                    input: 'select',
+                    inputOptions: {
+                        'Pending': 'Pending',
+                        'Processing': 'Processing',
+                        'Shipped': 'Shipped',
+                        'Delivered': 'Delivered',
+                        'Cancelled': 'Cancelled'
+                    },
+                    inputPlaceholder: 'Select a new status',
+                    showCancelButton: true,
+                    confirmButtonText: 'Update Status',
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => {
+                            if (value && value !== currentStatus) {
+                                resolve();
+                            } else {
+                                resolve('You must select a new and different status.');
+                            }
+                        })
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed && result.value) {
+                        $('#orderIdInput').val(orderId);
+                        $('#newStatusInput').val(result.value);
+                        $('#updateStatusForm').submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

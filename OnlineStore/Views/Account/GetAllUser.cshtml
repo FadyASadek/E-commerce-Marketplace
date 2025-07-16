@@ -1,0 +1,172 @@
+﻿@model List<OnlineStore.ViewModel.UserManagement.UserRolesViewModel>
+
+@{
+    ViewData["Title"] = "User Management";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div style="margin-top : 20px" class="products-actions">
+    <h2 style="margin:0;">@ViewData["Title"]</h2>
+    <a asp-action="CreateUserWithRole" asp-controller="UserManagement">
+        <button class="add-product-btn">Add New User</button>
+    </a>
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>User Name</th>
+                <th>Email</th>
+                <th>Roles</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.UserName</td>
+                    <td>@user.Email</td>
+                    <td>
+                        @if (user.Roles.Any())
+                        {
+                            foreach (var role in user.Roles)
+                            {
+                                <span class="role-badge @role.ToLower()">@role</span>
+                            }
+                        }
+                        else
+                        {
+                            <span class="role-badge">No Roles</span>
+                        }
+                    </td>
+                    <td>
+                        @if (user.IsLockedOut)
+                        {
+                            <span class="status-badge cancelled">Blocked</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge delivered">Active</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="ManageUserRoles" asp-controller="UserManagement" asp-route-userId="@user.UserId">
+                            <button type="button" class="edit-btn">Manage Roles</button>
+                        </a>
+
+                        <form asp-action="ToggleUserLockout" asp-controller="UserManagement" asp-route-id="@user.UserId" method="post" style="display:inline;">
+                            @Html.AntiForgeryToken()
+                            @if (user.IsLockedOut)
+                            {
+                                <button type="button" class="edit-btn toggle-lock-btn" style="background-color: #198754">Unblock</button>
+                            }
+                            else
+                            {
+                                <button type="button" class="delete-btn toggle-lock-btn">Block</button>
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Styles {
+    <style>
+        .status-badge, .role-badge {
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: capitalize;
+            color: #fff;
+        }
+
+            .status-badge.delivered {
+                background-color: #198754;
+            }
+            .status-badge.cancelled {
+                background-color: #dc3545;
+            }
+            .role-badge.admin {
+                background-color: #6f42c1;
+            }
+            .role-badge.seller {
+                background-color: #0d6efd;
+            }
+        .role-badge {
+            background-color: #6c757d;
+        }
+    </style>
+}
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+
+            @{
+                    var successMessage = TempData["SuccessMessage"] as string;
+                    var errorMessage = TempData["ErrorMessage"] as string;
+            }
+
+            @if (!string.IsNullOrEmpty(successMessage))
+            {
+                    <text>
+                        const Toast = Swal.mixin({
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            timer: 3000,
+                            timerProgressBar: true,
+                            didOpen: (toast) => {
+                                toast.addEventListener('mouseenter', Swal.stopTimer)
+                                toast.addEventListener('mouseleave', Swal.resumeTimer)
+                            }
+                        });
+
+                        Toast.fire({
+                            icon: 'success',
+                            title: '@Html.Raw(successMessage)'
+                        });
+                    </text>
+            }
+
+            @if (!string.IsNullOrEmpty(errorMessage))
+            {
+                    <text>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: '@Html.Raw(errorMessage)',
+                        });
+                    </text>
+            }
+
+
+            $('.toggle-lock-btn').on('click', function (e) {
+                e.preventDefault();
+                var form = $(this).closest('form');
+                var buttonText = $(this).text().trim();
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: `Do you want to ${buttonText.toLowerCase()} this user?`,
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: (buttonText === 'Block' ? '#d33' : '#3085d6'),
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: `Yes, ${buttonText}!`
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+}

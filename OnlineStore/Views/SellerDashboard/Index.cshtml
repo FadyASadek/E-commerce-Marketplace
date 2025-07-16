@@ -1,0 +1,141 @@
+﻿@model SellerDashboardViewModel
+
+@{
+    ViewData["Title"] = "Seller Dashboard";
+}
+
+<div class="container-fluid dashboard-container">
+    <h1 class="dashboard-header">@ViewData["Title"]</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="stat-card card-sales">
+                <div class="stat-icon">
+                    <i class="fas fa-dollar-sign"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-title">Total Sales</span>
+                    <span class="stat-value">$@Model.TotalSales.ToString("N2")</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card card-items">
+                <div class="stat-icon">
+                    <i class="fas fa-box"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-title">Items Sold</span>
+                    <span class="stat-value">@Model.ItemsSoldCount</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="stat-card card-orders">
+                <div class="stat-icon">
+                    <i class="fas fa-cogs"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-title">Active Orders</span>
+                    <span class="stat-value">@Model.ActiveOrdersCount</span>
+                </div>
+                <a asp-action="MySales" asp-controller="SellerDashboard" class="stat-link">View Orders</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .dashboard-container {
+            padding: 2rem;
+        }
+
+        .dashboard-header {
+            font-weight: 700;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background-color: #fff;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+            .stat-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 5px;
+                height: 100%;
+            }
+
+        .card-sales::before {
+            background-color: #198754;
+        }
+        .card-items::before {
+            background-color: #0d6efd;
+        }
+        .card-orders::before {
+            background-color: #ffc107;
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            padding: 1rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .card-sales .stat-icon {
+            color: #198754;
+            background-color: #d1e7dd;
+        }
+
+        .card-items .stat-icon {
+            color: #0d6efd;
+            background-color: #cce5ff;
+        }
+
+        .card-orders .stat-icon {
+            color: #856404;
+            background-color: #fff3cd;
+        }
+
+        .stat-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-title {
+            color: #6c757d;
+            font-size: 1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .stat-link {
+            position: absolute;
+            bottom: 10px;
+            right: 15px;
+            font-size: 0.8rem;
+            text-decoration: none;
+        }
+    </style>
+}

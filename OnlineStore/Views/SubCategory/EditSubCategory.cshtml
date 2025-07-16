@@ -1,0 +1,68 @@
+﻿@model OnlineStore.ViewModel.SubCategory.EditSubCategoryVM
+
+@{
+    ViewData["Title"] = "Edit Sub-Category";
+    SelectList categortes = new SelectList(ViewBag.category, "Id", "Name", Model.categoryId);
+}
+
+<div class="c1">
+    <h1 class="uid-10">@ViewData["Title"]</h1>
+
+    <form asp-action="EditSubCategory" asp-route-id="@Model.id" method="post" enctype="multipart/form-data" class="uid-11">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="id" />
+        <input type="hidden" asp-for="CurrentImage" />
+
+        <div class="c2">
+            <label asp-for="name" class="uid-13"><i class="fas fa-tag"></i> Sub-Category Name</label>
+            <input asp-for="name" class="uid-15" />
+            <span style="color:red" asp-validation-for="name" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="description" class="uid-26"><i class="fas fa-align-left"></i> Description</label>
+            <textarea asp-for="description" rows="4" class="uid-28"></textarea>
+            <span style="color:red" asp-validation-for="description" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="categoryId" class="uid-31"><i class="fas fa-sitemap"></i> Main Category</label>
+            <select asp-for="categoryId" class="uid-33 form-control" asp-items="categortes"></select>
+            <span style="color:red" asp-validation-for="categoryId" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="mainImage" class="uid-46"><i class="fas fa-image"></i> Change Image (Optional)</label>
+            <input asp-for="mainImage" type="file" accept="image/*" class="uid-48" id="mainImage">
+            <span style="color:red" asp-validation-for="mainImage" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label>Image Preview</label>
+            <div class="c4 uid-49" id="mainImagePreview">
+                @if (!string.IsNullOrEmpty(Model.CurrentImage))
+                {
+                    <img src="@Model.CurrentImage" alt="Current Sub-Category Image" style="max-width: 100%; max-height: 150px; border-radius: 5px;" />
+                }
+                else
+                {
+                    <p class="uid-50">No image currently available.</p>
+                }
+            </div>
+        </div>
+        <div style="color:red" asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6 uid-57"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    
+}

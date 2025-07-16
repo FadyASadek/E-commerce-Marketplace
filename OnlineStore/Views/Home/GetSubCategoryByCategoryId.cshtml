@@ -1,0 +1,137 @@
+﻿@model subcategoryAndProduct
+@if (Model.subCategories == null || !Model.subCategories.Any())
+{
+    <div class="alert alert-warning">@ViewBag.Message</div>
+}
+else
+{
+    <div class="header">
+        <h1>Subcategories</h1>
+    </div>
+    <div class="subcategories-section">
+        <div class="subcategories-grid">
+            @foreach (var i in Model.subCategories)
+            {
+                <a asp-action="GetProductBySubCategry" asp-controller="home" asp-route-id="@i.Id" class="product-card-link">
+                <div class="subcategory-card">
+                    <img src="@i.Image" alt="Electronics">
+                    <h3>@i.Name</h3>
+                </div>
+                </a>
+            }
+            
+        </div>
+    </div>
+    @if (Model.products != null && Model.products.Any())
+    {
+           <div class="products-section">
+                   
+               <h2>Related Products</h2>
+               <div class="products-grid">
+                   @foreach(var i in Model.products)
+                   {
+                       <a asp-action="Details" asp-controller="product" asp-route-id="@i.Id" class="product-card-link">
+                       <div class="product-card">
+                           <img src="@i.MainImage" alt="iPhone 13 Pro Max">
+                           <h3>@i.Name</h3>
+                           <p>@i.Description</p>
+                           <div class="product-price">$@i.Price</div>
+                       </div>
+                       </a>
+                   }
+                     
+               </div>
+           </div>
+        }
+
+
+
+}
+<style>
+
+
+    .alert-warning {
+        color: #664d03;
+        background-color: #fff3cd;
+        border-color: #ffecb5;
+        display: flex;
+        justify-content: center;
+        align-items: center; 
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        padding: 20px;
+        width: 70%;
+        text-align: center;
+        border-radius: 8px;
+    }
+
+    .articles {
+        position: relative;
+        background-color: #dddd;
+        border-radius: 6px;
+        padding: 12px 4px;
+    }
+
+        .articles .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 40px;
+            align-items: stretch;
+        }
+
+        .articles .box {
+            box-shadow: 0 2px 15px rgb(0 0 0 / 10%);
+            background-color: white;
+            border-radius: 6px;
+            overflow: hidden;
+            transition: transform var(--main-transition), box-shadow var(--main-transition);
+        }
+
+            .articles .box:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 2px 15px rgb(0 0 0 / 20%);
+            }
+
+            .articles .box img {
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .articles .box .content {
+                padding: 20px;
+            }
+
+                .articles .box .content h3 {
+                    margin: 0;
+                }
+
+                .articles .box .content p {
+                    margin: 10px 0 0;
+                    line-height: 1.5;
+                    color: #777;
+                }
+
+            .articles .box .info {
+                padding: 20px;
+                border-top: 1px solid #e6e6e7;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+                .articles .box .info a {
+                    color: var(--main-color);
+                    font-weight: bold;
+                }
+
+                .articles .box .info i {
+                    color: var(--main-color);
+                }
+
+            .articles .box:hover .info i {
+                animation: moving-arrow 0.6s linear infinite;
+            }
+
+</style>

@@ -1,0 +1,126 @@
+
+.category-carousel {
+    position: sticky;
+    padding: 1.5rem 3.5rem; /
+    margin-top: 0; 
+    background-color: #ffffff;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 98;
+    display: flex;
+    align-items: center;
+    top: 70px; 
+    width: 100%;
+}
+
+.category-container {
+    overflow: hidden;
+    width: 100%;
+}
+
+.category-items {
+    display: flex;
+    transition: transform 0.3s ease;
+    gap: 1.5rem;
+    padding: 0.5rem;
+}
+
+.category-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 0 0 auto;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    margin-left: 15px;
+}
+
+.category-item img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: contain;
+    background-color: #f8f9fa;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+    margin-bottom: 0.5rem;
+    padding: 12px;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+}
+
+.category-item span {
+    font-size: 0.9rem;
+    color: #555;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.category-item:hover img {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.category-item:hover span {
+    color: #3498db;
+}
+
+.category-item.active img {
+    border-color: #3498db;
+    background-color: rgba(52, 152, 219, 0.05);
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.category-item.active span {
+    color: #3498db;
+    font-weight: 600;
+}
+
+.carousel-arrow {
+    position: absolute;
+    background: white;
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 1.25rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    z-index: 99;
+    transition: all 0.3s ease;
+    color: #555;
+}
+
+.carousel-arrow:hover {
+    background-color: #3498db;
+    color: white;
+    box-shadow: 0 5px 15px rgba(52, 152, 219, 0.3);
+}
+
+.carousel-arrow.prev {
+    left: 10px;
+}
+
+.carousel-arrow.next {
+    right: 10px;
+}
+
+@media (max-width: 768px) {
+    .category-item img {
+        width: 60px;
+        height: 60px;
+        padding: 8px;
+    }
+
+    .category-item span {
+        font-size: 0.8rem;
+    }
+
+    .carousel-arrow {
+        width: 35px;
+        height: 35px;
+    }
+}

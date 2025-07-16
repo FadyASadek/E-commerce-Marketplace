@@ -1,0 +1,31 @@
+﻿@model IEnumerable<CategoryWithProductCountViewModel>
+
+@{
+    ViewData["Title"] = "ALL Category";
+}
+ 
+<div class="categories-container">
+    <h1 class="page-title">Product Categories</h1>
+    <p class="page-description">Browse all available product categories on our website</p>
+
+    <div class="categories-grid">
+        @foreach(var i in Model)
+        {
+        <div class="category-card">
+      <a asp-action="GetSubCategoryByCategoryId" asp-controller="home" asp-route-id="@i.id" class="product-card-link">    
+            <div class="category-image">
+                <img src="@i.Image" alt="Electronics">
+                <div class="category-overlay"></div>
+            </div>
+            <div class="category-content">
+                <h2 class="category-title">@i.Name</h2>
+                <p class="category-description">@i.Description</p>
+                <span class="product-count">@i.ProductCount Products</span>
+                <a  class="view-category-btn">Browse Category</a>
+            </div>
+        </a>
+        </div>
+        }
+       
+    </div>
+</div>

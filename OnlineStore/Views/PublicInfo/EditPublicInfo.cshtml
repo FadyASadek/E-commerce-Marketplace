@@ -1,0 +1,92 @@
+﻿@model OnlineStore.ViewModel.PublicInfoViewModel.EditPublicInfoVM
+
+@{
+    ViewData["Title"] = "Edit Public Info";
+}
+
+<div class="c1">
+    <h1 class="uid-10">@ViewData["Title"]</h1>
+
+    <form asp-action="EditPublicInfo" asp-route-id="@Model.id" method="post" enctype="multipart/form-data" class="uid-11">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="id" />
+        <input type="hidden" asp-for="CurrentImage" />
+
+        <div class="c2">
+            <label asp-for="Title" class="uid-13"><i class="fas fa-heading"></i> Title</label>
+            <input asp-for="Title" class="uid-15" />
+            <span style="color:red" asp-validation-for="Title" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="Email" class="uid-13"><i class="fas fa-envelope"></i> Contact Email</label>
+            <input asp-for="Email" class="uid-15" />
+            <span style="color:red" asp-validation-for="Email" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="Description" class="uid-26"><i class="fas fa-align-left"></i> Description</label>
+            <textarea asp-for="Description" rows="4" class="uid-28"></textarea>
+            <span style="color:red" asp-validation-for="Description" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="Logo" class="uid-46"><i class="fas fa-image"></i> Change Logo (Optional)</label>
+            <input asp-for="Logo" type="file" accept="image/*" class="uid-48">
+            <span style="color:red" asp-validation-for="Logo" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label>Current Logo Preview</label>
+            <div class="c4 uid-49" id="logoPreviewContainer">
+                @if (!string.IsNullOrEmpty(Model.CurrentImage))
+                {
+                    <img id="previewImage" src="@Model.CurrentImage" alt="Current Logo" style="max-width: 100%; max-height: 150px; border-radius: 5px; background-color: #f8f9fa; padding: 10px;" />
+                }
+                else
+                {
+                    <p class="uid-50">No logo currently uploaded.</p>
+                }
+            </div>
+        </div>
+        <div style="color:red" asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6 uid-57"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+            $('#Logo').on('change', function(event) {
+                var previewImage = $('#previewImage');
+                var previewContainer = $('#logoPreviewContainer');
+
+                if (event.target.files && event.target.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        if (previewImage.length === 0) {
+                            previewContainer.empty();
+                            previewImage = $('<img>').attr('id', 'previewImage').css({
+                                'max-width': '100%',
+                                'max-height': '150px',
+                                'border-radius': '5px',
+                                'background-color': '#f8f9fa',
+                                'padding': '10px'
+                            });
+                            previewContainer.append(previewImage);
+                        }
+                        previewImage.attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(event.target.files[0]);
+                }
+            });
+        });
+    </script>
+}

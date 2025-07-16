@@ -1,0 +1,362 @@
+﻿@model OnlineStore.ViewModels.CheckoutViewModel
+
+@{
+    ViewData["Title"] = "Secure Checkout";
+    Layout = null;
+}
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - YourStore</title>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.1.3/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --color-primary: #4f46e5;
+            --color-text: #111827;
+            --color-muted: #6b7280;
+            --color-surface: #ffffff;
+            --color-background: #f9fafb;
+            --color-border: #e5e7eb;
+            --font-family-base: 'Inter', sans-serif;
+        }
+
+        body {
+            font-family: var(--font-family-base);
+            background-color: var(--color-surface);
+            color: var(--color-text);
+        }
+
+        .checkout-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .form-panel {
+            flex-basis: 55%;
+            padding: 3rem 7%;
+            border-right: 1px solid var(--color-border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-header .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            color: var(--color-text);
+        }
+
+        .stepper {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            margin-top: 1.5rem;
+            color: var(--color-muted);
+        }
+
+            .stepper a {
+                color: var(--color-primary);
+                text-decoration: none;
+            }
+
+            .stepper .active {
+                font-weight: 500;
+                color: var(--color-text);
+            }
+
+            .stepper .fa-chevron-right {
+                font-size: 0.7rem;
+            }
+
+        .form-section {
+            margin-top: 2.5rem;
+        }
+
+        .section-header h4 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        .form-input {
+            width: 100%;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            padding: 0.9rem;
+            font-size: 0.95rem;
+            transition: border-color 0.2s ease;
+        }
+
+            .form-input:focus {
+                border-color: var(--color-primary);
+                outline: none;
+                box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            }
+
+        .form-input-label {
+            position: absolute;
+            top: 0.9rem;
+            left: 0.9rem;
+            color: var(--color-muted);
+            background-color: var(--color-surface);
+            padding: 0 0.25rem;
+            transition: all 0.2s ease;
+            pointer-events: none;
+        }
+
+        .form-input:focus + .form-input-label,
+        .form-input:not(:placeholder-shown) + .form-input-label {
+            top: -0.6rem;
+            font-size: 0.8rem;
+            color: var(--color-primary);
+        }
+
+        .text-danger-small {
+            font-size: 0.8rem;
+            color: #dc3545;
+            display: block;
+            margin-top: 4px;
+        }
+
+        .form-actions {
+            margin-top: auto;
+            padding-top: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            color: var(--color-primary);
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .submit-button {
+            background-color: var(--color-primary);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+
+            .submit-button:hover {
+                background-color: #4338ca;
+            }
+
+        .summary-panel {
+            flex-basis: 45%;
+            padding: 3rem 7%;
+            background-color: var(--color-background);
+        }
+
+        .summary-product {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 1rem 0;
+        }
+
+        .product-image {
+            position: relative;
+        }
+
+            .product-image img {
+                width: 64px;
+                height: 64px;
+                object-fit: cover;
+                border-radius: 8px;
+                border: 1px solid #e1e1e1;
+            }
+
+        .product-quantity-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background-color: var(--color-muted);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 500;
+            border: 2px solid var(--color-background);
+        }
+
+        .product-info {
+            flex-grow: 1;
+        }
+
+        .product-name {
+            font-weight: 500;
+        }
+
+        .product-price {
+            font-weight: 500;
+        }
+
+        hr {
+            border: none;
+            height: 1px;
+            background-color: var(--color-border);
+            margin: 1.5rem 0;
+        }
+
+        .summary-line, .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+        }
+
+        .summary-total {
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .total-price {
+            font-size: 1.6rem;
+        }
+
+        @@media (max-width: 992px) {
+            .checkout-layout {
+                flex-direction: column;
+            }
+
+            .form-panel, .summary-panel {
+                flex-basis: auto;
+                width: 100%;
+                border: none;
+            }
+
+            .form-panel {
+                order: 1;
+            }
+
+            .summary-panel {
+                order: -1;
+                border-bottom: 1px solid var(--color-border);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-layout">
+        <div class="form-panel">
+            <div class="form-header">
+                <a asp-controller="Home" asp-action="Index" class="logo">YourStore</a>
+                <div class="stepper">
+                    <a asp-controller="Cart" asp-action="Index">Cart</a>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="active">Information</span>
+                    <i class="fas fa-chevron-right"></i>
+                    <span class="text-muted">Payment</span>
+                </div>
+            </div>
+
+            <form asp-action="PlaceOrder" method="post" class="mt-4">
+                @Html.AntiForgeryToken()
+                <div class="form-section">
+                    <div class="section-header">
+                        <h4>Shipping Address</h4>
+                        <div asp-validation-summary="All" class="text-danger"></div>
+
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input asp-for="RecipientName" class="form-input" placeholder=" " />
+                                <label asp-for="RecipientName" class="form-input-label"></label>
+                            </div>
+                            <span asp-validation-for="RecipientName" class="text-danger-small"></span>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group">
+                                <input asp-for="ShippingAddress" class="form-input" placeholder=" " />
+                                <label asp-for="ShippingAddress" class="form-input-label">Address</label>
+                            </div>
+                            <span asp-validation-for="ShippingAddress" class="text-danger-small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input asp-for="City" class="form-input" placeholder=" " />
+                                <label asp-for="City" class="form-input-label"></label>
+                            </div>
+                            <span asp-validation-for="City" class="text-danger-small"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="input-group">
+                                <input asp-for="RecipientPhone" class="form-input" placeholder=" " />
+                                <label asp-for="RecipientPhone" class="form-input-label"></label>
+                            </div>
+                            <span asp-validation-for="RecipientPhone" class="text-danger-small"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <a asp-controller="Cart" asp-action="Index" class="back-link">&larr; Return to cart</a>
+                    <button class="submit-button" type="submit">Complete Order</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="summary-panel">
+            <div class="summary-content">
+                @foreach (var item in Model.CartItems)
+                {
+                    <div class="summary-product">
+                        <div class="product-image">
+                            <img src="@item.Product.MainImage" />
+                            <span class="product-quantity-badge">@item.Quantity</span>
+                        </div>
+                        <div class="product-info">
+                            <span class="product-name">@item.Product.Name</span>
+                        </div>
+                        <div class="product-price">
+                            $@((item.Quantity * (decimal)item.Product.Price).ToString("F2"))
+                        </div>
+                    </div>
+                }
+                <hr />
+                <div class="summary-line">
+                    <span>Subtotal</span>
+                    <span>$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+                <div class="summary-line">
+                    <span>Shipping</span>
+                    <span>FREE</span>
+                </div>
+                <hr />
+                <div class="summary-total">
+                    <span>Total</span>
+                    <span class="total-price">$@Model.GrandTotal.ToString("F2")</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+</body>
+</html>

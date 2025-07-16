@@ -1,0 +1,90 @@
+﻿@model EditCategoryVm
+
+@{
+    ViewData["Title"] = $"Edit Category: {Model.name}";
+}
+
+<div class="c1">
+    <h1 class="uid-10">@ViewData["Title"]</h1>
+
+    <form asp-action="EditCategory" enctype="multipart/form-data" method="post" class="uid-11">
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" asp-for="id" />
+        <input type="hidden" asp-for="CurrentImage" />
+
+        <div class="c2">
+            <label asp-for="name" class="uid-13"><i class="fas fa-tag"></i> Category Name</label>
+            <input asp-for="name" type="text" class="uid-15" />
+            <span style="color:red !important;" asp-validation-for="name" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="description" class="uid-26"><i class="fas fa-align-left"></i> Description</label>
+            <textarea asp-for="description" rows="4" class="uid-28"></textarea>
+            <span style="color:red !important;" asp-validation-for="description" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label asp-for="PrimaryImage" class="uid-46"><i class="fas fa-image"></i> Change Image (Optional)</label>
+            <input asp-for="PrimaryImage" type="file" accept="image/*" class="uid-48">
+            <span style="color:red !important;" asp-validation-for="PrimaryImage" class="text-danger"></span>
+        </div>
+
+        <div class="c2">
+            <label>Current Image</label>
+            <div class="c4 uid-49" id="mainImagePreview">
+                @if (!string.IsNullOrEmpty(Model.CurrentImage))
+                {
+                    <img id="currentImageTag" src="@Model.CurrentImage" alt="Current Category Image" style="max-width: 100%; max-height: 200px; border-radius: 5px;" />
+                }
+                else
+                {
+                    <p class="uid-50">No image currently available.</p>
+                }
+            </div>
+        </div>
+        <div style="color:red !important;" asp-validation-summary="All" class="text-danger"></div>
+
+        <div class="mt-4">
+            <button type="submit" class="c6 uid-57"><i class="fas fa-save"></i> Save Changes</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script>
+        $(document).ready(function() {
+
+            $('#PrimaryImage').on('change', function(event) {
+                var previewContainer = $('#mainImagePreview');
+
+                if (event.target.files && event.target.files[0]) {
+                    var file = event.target.files[0];
+                    var reader = new FileReader();
+
+                    reader.onload = function(e) {
+                        previewContainer.empty();
+
+                        var img = $('<img>').attr('src', e.target.result).css({
+                            'max-width': '100%',
+                            'max-height': '200px',
+                            'border-radius': '5px'
+                        });
+
+                        previewContainer.append(img);
+                    }
+
+                    reader.readAsDataURL(file);
+                } else {
+                    
+                }
+            });
+
+        });
+    </script>
+}

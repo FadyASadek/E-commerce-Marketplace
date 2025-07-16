@@ -1,0 +1,100 @@
+﻿@model IEnumerable<OnlineStore.Models.Commment>
+
+@{
+    ViewData["Title"] = "Manage Comments";
+    Layout = "_Layout";
+}
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<div class="products-actions">
+    <h2 style="margin:0;">Manage Comments</h2>
+</div>
+
+<div class="products-table">
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Comment</th>
+                <th>Product</th>
+                <th>Date</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @if (Model.Any())
+            {
+                @foreach (var comment in Model)
+                {
+                    <tr>
+                        <td>@comment.User.UserName</td>
+                        <td>
+                            @if (comment.Comments.Length > 50)
+                            {
+                                @(comment.Comments.Substring(0, 50) + "...")
+                            }
+                            else
+                            {
+                                @comment.Comments
+                            }
+                        </td>
+                        <td>
+                            <a asp-controller="Product" asp-action="Details" asp-route-id="@comment.productId" target="_blank">
+                                @comment.product.Name
+                            </a>
+                        </td>
+                        <td>@comment.CreateAt.ToString("yyyy-MM-dd hh:mm tt")</td>
+                        <td>
+                            <a asp-action="EditComment" asp-controller="Comment" asp-route-id="@comment.Id">
+                                <button class="edit-btn">Edit</button>
+                            </a>
+
+                            <form asp-action="DeleteComment" asp-controller="Comment" asp-route-id="@comment.Id" method="post" style="display:inline;">
+                                @Html.AntiForgeryToken()
+                                <button type="button" class="delete-btn delete-comment-btn">
+                                    Delete
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+            else
+            {
+                <tr>
+                    <td colspan="5" style="text-align:center; padding: 20px;">No comments found.</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            
+            $('.delete-comment-btn').on('click', function (e) {
+                e.preventDefault(); 
+                
+                var form = $(this).closest('form'); 
+                
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You will not be able to undo the deletion of this comment!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#d33',
+                    cancelButtonColor: '#3085d6',
+                    confirmButtonText: 'Yes, delete it',
+                    cancelButtonText: 'Cancel'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.submit();
+                    }
+                })
+            });
+
+        });
+    </script>
+}

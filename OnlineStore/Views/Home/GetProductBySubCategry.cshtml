@@ -1,0 +1,43 @@
+﻿@model IEnumerable<Product>
+
+@if(Model == null || !Model.Any())
+{
+    <div class="alert alert-warning">No products available.</div>
+}
+else
+{
+    <div class="products-container">
+        @foreach(var i in Model){
+            <a asp-action="Details" asp-controller="product" asp-route-id="@i.Id" class="product-card-link">
+                <div class="product-card">
+                   
+                    <div class="product-image">
+                        <img src="@i.MainImage" alt="Smartphone">
+                    </div>
+                    <div class="product-details">
+                        <span class="product-category">@i.subCategory.category.Name</span>
+                        <h3 class="product-name">@i.Name</h3>
+                        <div class="product-price">
+                            <span class="current-price" style="margin-bottom:5px;margin-top:5px;">$@i.Price</span>
+                        </div>                      
+                        <button class="add-to-cart">
+                            <i class="fas fa-shopping-cart"></i>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            </a>
+        }
+    </div>
+}
+<style>
+        .alert.alert-warning {
+        background-color: antiquewhite;
+        display: flex
+    ;
+        justify-content: center;
+        align-items: center;
+        padding: 15px 20px;
+        font-size: 18px;
+    }
+</style>

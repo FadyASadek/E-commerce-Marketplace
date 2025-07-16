@@ -1,0 +1,97 @@
+﻿@model OnlineStore.ViewModels.Account.CreateUserWithRoleViewModel
+
+@{
+    ViewData["Title"] = "Create New User";
+}
+
+<div class="container">
+    <div class="form-container">
+        <div class="header">
+            <h1>Create a New User Account</h1>
+            <p>Create a new account with a specific role (Admin/Seller).</p>
+        </div>
+
+        @if (TempData["SuccessMessage"] != null)
+        {
+            <div class="alert alert-success">
+                @TempData["SuccessMessage"]
+            </div>
+        }
+
+        <form id="registerForm" asp-action="CreateUserWithRole" asp-controller="UserManagement" method="post" novalidate>
+
+            @Html.AntiForgeryToken()
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <div class="form-group">
+                <label asp-for="Name"><i class="fas fa-user"></i> Name</label>
+                <input asp-for="Name" placeholder="Enter user's name">
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input asp-for="email" placeholder="Enter user's email">
+                <span asp-validation-for="email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="phone"><i class="fas fa-phone"></i> Phone</label>
+                <input asp-for="phone" placeholder="Enter user's Phone Number">
+                <span asp-validation-for="phone" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="password"><i class="fas fa-lock"></i> Password</label>
+                <div class="password-container">
+                    <input asp-for="password" placeholder="Create a password">
+                    <button type="button" class="toggle-password" id="togglePassword" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="password" class="text-danger"></span>
+
+                <div class="password-strength">
+                    <div class="strength-meter">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="strength-text" id="strengthText">Password strength</div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="confirmPassword"><i class="fas fa-lock"></i> Confirm Password</label>
+                <div class="password-container">
+                    <input asp-for="confirmPassword" placeholder="Confirm the password">
+                    <button type="button" class="toggle-password" id="toggleConfirmPassword" tabindex="-1">
+                        <i class="fas fa-eye"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="confirmPassword" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="SelectedRole"><i class="fas fa-user-shield"></i> Role</label>
+                <select asp-for="SelectedRole" asp-items="@Model.AllRoles" class="form-control">
+                    <option value="">-- Select Role --</option>
+                </select>
+                <span asp-validation-for="SelectedRole" class="text-danger"></span>
+            </div>
+
+
+            <button type="submit" class="submit-btn">
+                <i class="fas fa-user-plus"></i> Create User
+            </button>
+        </form>
+
+    </div>
+</div>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/js/register.js"></script>
+}
