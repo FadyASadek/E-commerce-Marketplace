@@ -38,7 +38,7 @@ This project is packed with professional, real-world features:
 -   **Database:** Microsoft SQL Server.
 -   **Libraries:** SweetAlert2 for modern and responsive user notifications.
 -   **Architectural Patterns:**
-    -   **Repository Pattern & Unit of Work:** To abstract data access logic and maintain clean, testable controllers.
+    -   **Repository Pattern :** To abstract data access logic and maintain clean, testable controllers.
     -   **MVC (Model-View-Controller):** For a clear separation of concerns.
     * **Role-Based Authorization:** Securely restricting access to different parts of the application based on user roles (Admin, Seller, Customer).
     * **Database Transactions:** Ensuring data integrity for critical operations like placing an order.
